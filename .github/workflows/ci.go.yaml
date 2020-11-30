@@ -28,9 +28,7 @@ jobs:
           go get
       - name: Run build
         run: go build .
-      - name: Run vet & lint
-        run: |
-          go vet .
-          golint .
+      - name: Run vet
+        run: go vet .
       - name: Run testing
         run: cd tests && go test -v
