@@ -1,15 +1,16 @@
-package service
+package tests
 
 import (
 	"fmt"
 	"testing"
 
+	"github.com/rokoga/filas-backend/service"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCreate(t *testing.T) {
 
-	svc := NewStoreServiceImpl()
+	svc := service.NewStoreServiceImpl()
 
 	URLname := "outback"
 	name := "Outback"
