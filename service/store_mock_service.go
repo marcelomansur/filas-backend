@@ -114,7 +114,7 @@ func (svc *StoreMockServiceImpl) GetStoreByID(id string) (*domain.Store, error) 
 }
 
 // AddConsumer implements
-func (svc *StoreMockServiceImpl) AddConsumer(id, name, phone string) (string, error) {
+func (svc *StoreMockServiceImpl) AddConsumer(id, name, phone, status string) (string, error) {
 
 	if id == "" || name == "" || phone == "" {
 		return "", errors.New(ErrorArgumentNotValidAddConsumer)
@@ -127,6 +127,7 @@ func (svc *StoreMockServiceImpl) AddConsumer(id, name, phone string) (string, er
 		Name:      name,
 		Phone:     phone,
 		Accesskey: strconv.Itoa(r1.Int()),
+		Status:    status,
 	}
 
 	if err := svc.storeRepository.AddConsumer(id, &consumer); err != nil {
@@ -161,12 +162,12 @@ func (svc *StoreMockServiceImpl) RemoveConsumer(id, phone string) error {
 func (svc *StoreMockServiceImpl) GetConsumer(id, phone string) (int, *domain.Consumer, error) {
 
 	if id == "" || phone == "" {
-		return 0, nil, errors.New(ErrorArgumentNotValidGetConsumer)
+		return -1, nil, errors.New(ErrorArgumentNotValidGetConsumer)
 	}
 
 	position, consumer, err := svc.storeRepository.GetConsumer(id, phone)
 	if err != nil {
-		return 0, nil, err
+		return -1, nil, err
 	}
 
 	return position, consumer, nil
@@ -191,12 +192,12 @@ func (svc *StoreMockServiceImpl) GetAllConsumers(id string) ([]*domain.Consumer,
 func (svc *StoreMockServiceImpl) ValidateConsumer(storeName, accessKey string) (int, *domain.Consumer, error) {
 
 	if storeName == "" || accessKey == "" {
-		return 0, nil, errors.New(ErrorArgumentNotValidValidateConsumer)
+		return -1, nil, errors.New(ErrorArgumentNotValidValidateConsumer)
 	}
 
 	position, consumer, err := svc.storeRepository.GetConsumer(storeName, accessKey)
 	if err != nil {
-		return 0, nil, err
+		return -1, nil, err
 	}
 
 	return position, consumer, nil

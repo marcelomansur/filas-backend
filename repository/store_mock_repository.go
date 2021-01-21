@@ -137,7 +137,7 @@ func (repo *StoreMockRepositoryImpl) GetConsumer(id string, phone string) (int, 
 		}
 	}
 
-	return 0, nil, errors.New(ErrorNotFoundConsumer)
+	return -1, nil, errors.New(ErrorNotFoundConsumer)
 }
 
 // GetAllConsumers implements
@@ -165,5 +165,5 @@ func (repo *StoreMockRepositoryImpl) ValidateConsumer(storeName, accessKey strin
 		}
 	}
 
-	return 0, nil, errors.New(ErrorNotValidAccessKey)
+	return -1, nil, errors.New(ErrorNotValidAccessKey)
 }

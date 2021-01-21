@@ -117,20 +117,21 @@ func TestAddConsumer(t *testing.T) {
 	assert.NotNil(t, store)
 
 	tests := []struct {
-		id    string
-		name  string
-		phone string
-		err   error
+		id     string
+		name   string
+		phone  string
+		status string
+		err    error
 	}{
-		{id: store.ID, name: "Fulano", phone: "011998989898", err: nil},
-		{id: store.ID, name: "Ciclano", phone: "011922222222", err: nil},
-		{id: store.ID, name: "", phone: "", err: errors.New(ErrorArgumentNotValidAddConsumer)},
-		{id: "", name: "Fulaninho", phone: "011888888888", err: errors.New(ErrorArgumentNotValidAddConsumer)},
-		{id: "FakeID", name: "Fulaninho", phone: "011888888888", err: errors.New(repository.ErrorNotFoundStore)},
+		{id: store.ID, name: "Fulano", phone: "011998989898", status: "Na fila", err: nil},
+		{id: store.ID, name: "Ciclano", phone: "011922222222", status: "Na fila", err: nil},
+		{id: store.ID, name: "", phone: "", status: "Na fila", err: errors.New(ErrorArgumentNotValidAddConsumer)},
+		{id: "", name: "Fulaninho", phone: "011888888888", status: "Na fila", err: errors.New(ErrorArgumentNotValidAddConsumer)},
+		{id: "FakeID", name: "Fulaninho", phone: "011888888888", status: "Na fila", err: errors.New(repository.ErrorNotFoundStore)},
 	}
 
 	for _, test := range tests {
-		accessURL, err := svc.AddConsumer(test.id, test.name, test.phone)
+		accessURL, err := svc.AddConsumer(test.id, test.name, test.phone, test.status)
 		if err == nil {
 			assert.NotNil(t, accessURL)
 		} else {
@@ -155,8 +156,9 @@ func TestRemoveConsumer(t *testing.T) {
 	consumerName := "Fulano"
 	consumerPhone := "011998989898"
 	consumerFakePhone := "011988888888"
+	status := "Na fila"
 
-	accessConsumerURL, err2 := svc.AddConsumer(store.ID, consumerName, consumerPhone)
+	accessConsumerURL, err2 := svc.AddConsumer(store.ID, consumerName, consumerPhone, status)
 
 	assert.Nil(t, err2)
 	assert.NotNil(t, accessConsumerURL)
@@ -193,30 +195,33 @@ func TestGetConsumer(t *testing.T) {
 	consumerName := "Fulano"
 	consumerPhone := "011998989898"
 	consumerFakePhone := "011988888888"
+	status := "Na fila"
 
-	accessConsumerURL, err2 := svc.AddConsumer(store.ID, consumerName, consumerPhone)
+	accessConsumerURL, err2 := svc.AddConsumer(store.ID, consumerName, consumerPhone, status)
 
 	assert.Nil(t, err2)
 	assert.NotNil(t, accessConsumerURL)
 
 	tests := []struct {
-		id    string
-		phone string
-		err   error
+		id     string
+		phone  string
+		status string
+		err    error
 	}{
-		{id: store.ID, phone: consumerPhone, err: nil},
-		{id: store.ID, phone: consumerFakePhone, err: errors.New(repository.ErrorNotFoundConsumer)},
-		{id: "fakeID", phone: consumerPhone, err: errors.New(repository.ErrorNotFoundConsumer)},
-		{id: "", phone: consumerPhone, err: errors.New(ErrorArgumentNotValidGetConsumer)},
+		{id: store.ID, phone: consumerPhone, status: "Na fila", err: nil},
+		{id: store.ID, phone: consumerFakePhone, status: "Na fila", err: errors.New(repository.ErrorNotFoundConsumer)},
+		{id: "fakeID", phone: consumerPhone, status: "Na fila", err: errors.New(repository.ErrorNotFoundConsumer)},
+		{id: "", phone: consumerPhone, status: "Na fila", err: errors.New(ErrorArgumentNotValidGetConsumer)},
 	}
 
 	for _, test := range tests {
-		consumer, err := svc.GetConsumer(test.id, test.phone)
+		position, consumer, err := svc.GetConsumer(test.id, test.phone)
 		if err == nil {
 			assert.NotNil(t, consumer)
 			assert.NotEmpty(t, consumer.Name)
 			assert.NotEmpty(t, consumer.Phone)
 			assert.NotEmpty(t, consumer.Accesskey)
+			assert.NotEqual(t, position, -1)
 		} else {
 			assert.Equal(t, test.err, err)
 			assert.Nil(t, consumer)
@@ -237,16 +242,17 @@ func TestGetAllConsumers(t *testing.T) {
 	assert.NotNil(t, store)
 
 	consumers := []struct {
-		name  string
-		phone string
+		name   string
+		phone  string
+		status string
 	}{
-		{name: "Fulano Um", phone: "011998989899"},
-		{name: "Fulano Dois", phone: "011976767676"},
-		{name: "Fulano Tres", phone: "011954545454"},
+		{name: "Fulano Um", phone: "011998989899", status: "Na fila"},
+		{name: "Fulano Dois", phone: "011976767676", status: "Na fila"},
+		{name: "Fulano Tres", phone: "011954545454", status: "Na fila"},
 	}
 
 	for _, c := range consumers {
-		accessConsumerURL, err := svc.AddConsumer(store.ID, c.name, c.phone)
+		accessConsumerURL, err := svc.AddConsumer(store.ID, c.name, c.phone, c.status)
 		assert.Nil(t, err)
 		assert.NotNil(t, accessConsumerURL)
 	}

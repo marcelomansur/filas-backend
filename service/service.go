@@ -9,7 +9,7 @@ type StoreService interface {
 	GetAllStores() ([]string, error)
 	GetStore(name string) (*domain.Store, error)
 	GetStoreByID(id string) (*domain.Store, error)
-	AddConsumer(id, name, phone string) (string, error)
+	AddConsumer(id, name, phone, status string) (string, error)
 	RemoveConsumer(id string, phone string) error
 	GetConsumer(id string, phone string) (int, *domain.Consumer, error)
 	GetAllConsumers(id string) ([]*domain.Consumer, error)

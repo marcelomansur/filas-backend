@@ -236,7 +236,7 @@ func (repo *StoreRepositoryImpl) GetConsumer(id string, phone string) (int, *dom
 
 	store, err := repo.GetStoreByID(id)
 	if err != nil {
-		return 0, nil, errors.New(ErrorNotFoundStore)
+		return -1, nil, errors.New(ErrorNotFoundStore)
 	}
 
 	for i, consumer := range store.Queue {
@@ -245,7 +245,7 @@ func (repo *StoreRepositoryImpl) GetConsumer(id string, phone string) (int, *dom
 		}
 	}
 
-	return 0, nil, errors.New(ErrorNotFoundConsumer)
+	return -1, nil, errors.New(ErrorNotFoundConsumer)
 }
 
 // GetAllConsumers implements
@@ -264,7 +264,7 @@ func (repo *StoreRepositoryImpl) ValidateConsumer(storeName, accessKey string) (
 
 	store, err := repo.GetStore(storeName)
 	if err != nil {
-		return 0, nil, errors.New(ErrorNotFoundStore)
+		return -1, nil, errors.New(ErrorNotFoundStore)
 	}
 
 	for i, consumer := range store.Queue {
@@ -273,5 +273,5 @@ func (repo *StoreRepositoryImpl) ValidateConsumer(storeName, accessKey string) (
 		}
 	}
 
-	return 0, nil, errors.New(ErrorNotValidAccessKey)
+	return -1, nil, errors.New(ErrorNotValidAccessKey)
 }

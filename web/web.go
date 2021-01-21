@@ -95,7 +95,8 @@ func Run(done chan string) {
 		addConsumerRequest := vo.AddConsumerRequest{}
 		c.BindJSON(&addConsumerRequest)
 
-		accessURL, err := svc.AddConsumer(addConsumerRequest.StoreID, addConsumerRequest.Name, addConsumerRequest.Phone)
+		status := "Na fila"
+		accessURL, err := svc.AddConsumer(addConsumerRequest.StoreID, addConsumerRequest.Name, addConsumerRequest.Phone, status)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -135,6 +136,7 @@ func Run(done chan string) {
 			"name":      consumer.Name,
 			"phone":     consumer.Phone,
 			"accessKey": consumer.Accesskey,
+			"status":    consumer.Status,
 		}
 
 		c.JSON(200, response)
@@ -169,6 +171,7 @@ func Run(done chan string) {
 			"name":      consumer.Name,
 			"phone":     consumer.Phone,
 			"accessKey": consumer.Accesskey,
+			"status":    consumer.Status,
 		}
 
 		c.JSON(200, response)
