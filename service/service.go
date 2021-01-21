@@ -13,4 +13,5 @@ type StoreService interface {
 	RemoveConsumer(id string, phone string) error
 	GetConsumer(id string, phone string) (int, *domain.Consumer, error)
 	GetAllConsumers(id string) ([]*domain.Consumer, error)
+	ValidateConsumer(storeName, accessKey string) (int, *domain.Consumer, error)
 }

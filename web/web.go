@@ -134,7 +134,7 @@ func Run(done chan string) {
 			"position":  position,
 			"name":      consumer.Name,
 			"phone":     consumer.Phone,
-			"accessKey": consumer.Name,
+			"accessKey": consumer.Accesskey,
 		}
 
 		c.JSON(200, response)
@@ -151,6 +151,27 @@ func Run(done chan string) {
 		}
 
 		c.JSON(200, allConsumers)
+	})
+
+	router.GET("/mystore/:storeName/:accessKey", func(c *gin.Context) {
+		accessKey := c.Param("accessKey")
+		storeName := c.Param("storeName")
+
+		position, consumer, err := svc.ValidateConsumer(storeName, accessKey)
+		if err != nil {
+			c.Error(err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		response := gin.H{
+			"position":  position,
+			"name":      consumer.Name,
+			"phone":     consumer.Phone,
+			"accessKey": consumer.Accesskey,
+		}
+
+		c.JSON(200, response)
 	})
 
 	fmt.Printf("Server is listening at %s", PORT)

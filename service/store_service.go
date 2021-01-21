@@ -27,6 +27,8 @@ const (
 	ErrorArgumentNotValidRemoveConsumer = "Os parametros para remoção de consumidor devem ser preenchidos"
 	// ErrorArgumentNotValidGetConsumer for invalid argument
 	ErrorArgumentNotValidGetConsumer = "Os parametros para pesquisa de consumidor devem ser preenchidos"
+	// ErrorArgumentNotValidValidateConsumer for invalid argument
+	ErrorArgumentNotValidValidateConsumer = "Os parametros para validação de consumidor devem ser preenchidos"
 	// ErrorStoreExists for already created store
 	ErrorStoreExists = "Estabelecimento com nome já cadastrado"
 )
@@ -61,7 +63,7 @@ func (svc *StoreServiceImpl) Create(name string) (*domain.Store, error) {
 		return nil, errors.New(ErrorStoreExists)
 	}
 
-	urlBase := "http://app.filas.com"
+	urlBase := "http://localhost:8080/mystore"
 	accessURL := fmt.Sprintf("%s/%s", urlBase, strings.ToLower(name))
 
 	store := domain.Store{
@@ -204,4 +206,19 @@ func (svc *StoreServiceImpl) GetAllConsumers(id string) ([]*domain.Consumer, err
 	}
 
 	return consumers, nil
+}
+
+// ValidateConsumer implements
+func (svc *StoreServiceImpl) ValidateConsumer(storeName, accessKey string) (int, *domain.Consumer, error) {
+
+	if storeName == "" || accessKey == "" {
+		return 0, nil, errors.New(ErrorArgumentNotValidValidateConsumer)
+	}
+
+	position, consumer, err := svc.storeRepository.ValidateConsumer(storeName, accessKey)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	return position, consumer, nil
 }

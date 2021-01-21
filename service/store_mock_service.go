@@ -186,3 +186,18 @@ func (svc *StoreMockServiceImpl) GetAllConsumers(id string) ([]*domain.Consumer,
 
 	return consumers, nil
 }
+
+// ValidateConsumer implements
+func (svc *StoreMockServiceImpl) ValidateConsumer(storeName, accessKey string) (int, *domain.Consumer, error) {
+
+	if storeName == "" || accessKey == "" {
+		return 0, nil, errors.New(ErrorArgumentNotValidValidateConsumer)
+	}
+
+	position, consumer, err := svc.storeRepository.GetConsumer(storeName, accessKey)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	return position, consumer, nil
+}

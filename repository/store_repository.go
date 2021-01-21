@@ -18,6 +18,8 @@ const (
 	ErrorNotFoundAllStores = "Erro ao pesquisar nomes dos estabelecimentos"
 	// ErrorNotFoundConsumer for consumer not found
 	ErrorNotFoundConsumer = "Não foi possível encontrar consumidor"
+	// ErrorNotValidAccessKey for accessKey not found
+	ErrorNotValidAccessKey = "Chave de acesso invalida"
 	// ErrorConsumerExists for consumer already exists
 	ErrorConsumerExists = "Consumidor já cadastrado na fila"
 	// ErrorParserID for error parsing ID string
@@ -255,4 +257,21 @@ func (repo *StoreRepositoryImpl) GetAllConsumers(id string) ([]*domain.Consumer,
 	}
 
 	return store.Queue, nil
+}
+
+// ValidateConsumer implements
+func (repo *StoreRepositoryImpl) ValidateConsumer(storeName, accessKey string) (int, *domain.Consumer, error) {
+
+	store, err := repo.GetStore(storeName)
+	if err != nil {
+		return 0, nil, errors.New(ErrorNotFoundStore)
+	}
+
+	for i, consumer := range store.Queue {
+		if consumer.Accesskey == accessKey {
+			return i, consumer, nil
+		}
+	}
+
+	return 0, nil, errors.New(ErrorNotValidAccessKey)
 }

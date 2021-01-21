@@ -151,3 +151,19 @@ func (repo *StoreMockRepositoryImpl) GetAllConsumers(id string) ([]*domain.Consu
 
 	return nil, errors.New(ErrorNotFoundStore)
 }
+
+// ValidateConsumer implements
+func (repo *StoreMockRepositoryImpl) ValidateConsumer(storeName, accessKey string) (int, *domain.Consumer, error) {
+
+	for _, elem := range repo.mockStore.aStore {
+		if elem.ID == storeName {
+			for i, consumer := range elem.Queue {
+				if consumer.Accesskey == accessKey {
+					return i, consumer, nil
+				}
+			}
+		}
+	}
+
+	return 0, nil, errors.New(ErrorNotValidAccessKey)
+}
