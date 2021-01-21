@@ -230,20 +230,20 @@ func (repo *StoreRepositoryImpl) RemoveConsumer(id string, phone string) error {
 }
 
 // GetConsumer implements
-func (repo *StoreRepositoryImpl) GetConsumer(id string, phone string) (*domain.Consumer, error) {
+func (repo *StoreRepositoryImpl) GetConsumer(id string, phone string) (int, *domain.Consumer, error) {
 
 	store, err := repo.GetStoreByID(id)
 	if err != nil {
-		return nil, errors.New(ErrorNotFoundStore)
+		return 0, nil, errors.New(ErrorNotFoundStore)
 	}
 
-	for _, consumer := range store.Queue {
+	for i, consumer := range store.Queue {
 		if consumer.Phone == phone {
-			return consumer, nil
+			return i, consumer, nil
 		}
 	}
 
-	return nil, errors.New(ErrorNotFoundConsumer)
+	return 0, nil, errors.New(ErrorNotFoundConsumer)
 }
 
 // GetAllConsumers implements

@@ -125,19 +125,19 @@ func (repo *StoreMockRepositoryImpl) RemoveConsumer(id string, phone string) err
 }
 
 // GetConsumer implements
-func (repo *StoreMockRepositoryImpl) GetConsumer(id string, phone string) (*domain.Consumer, error) {
+func (repo *StoreMockRepositoryImpl) GetConsumer(id string, phone string) (int, *domain.Consumer, error) {
 
 	for _, elem := range repo.mockStore.aStore {
 		if elem.ID == id {
-			for _, consumer := range elem.Queue {
+			for i, consumer := range elem.Queue {
 				if consumer.Phone == phone {
-					return consumer, nil
+					return i, consumer, nil
 				}
 			}
 		}
 	}
 
-	return nil, errors.New(ErrorNotFoundConsumer)
+	return 0, nil, errors.New(ErrorNotFoundConsumer)
 }
 
 // GetAllConsumers implements

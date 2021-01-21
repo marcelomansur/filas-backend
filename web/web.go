@@ -123,14 +123,21 @@ func Run(done chan string) {
 		storeid := c.Param("storeid")
 		number := c.Param("number")
 
-		consumer, err := svc.GetConsumer(storeid, number)
+		position, consumer, err := svc.GetConsumer(storeid, number)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		c.JSON(200, consumer)
+		response := gin.H{
+			"position":  position,
+			"name":      consumer.Name,
+			"phone":     consumer.Phone,
+			"accessKey": consumer.Name,
+		}
+
+		c.JSON(200, response)
 	})
 
 	router.GET("/consumers/:storeid", func(c *gin.Context) {

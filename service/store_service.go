@@ -177,18 +177,18 @@ func (svc *StoreServiceImpl) RemoveConsumer(id, phone string) error {
 }
 
 // GetConsumer implements
-func (svc *StoreServiceImpl) GetConsumer(id, phone string) (*domain.Consumer, error) {
+func (svc *StoreServiceImpl) GetConsumer(id, phone string) (int, *domain.Consumer, error) {
 
 	if id == "" || phone == "" {
-		return nil, errors.New(ErrorArgumentNotValidGetConsumer)
+		return 0, nil, errors.New(ErrorArgumentNotValidGetConsumer)
 	}
 
-	consumer, err := svc.storeRepository.GetConsumer(id, phone)
+	position, consumer, err := svc.storeRepository.GetConsumer(id, phone)
 	if err != nil {
-		return nil, err
+		return 0, nil, err
 	}
 
-	return consumer, nil
+	return position, consumer, nil
 }
 
 // GetAllConsumers implements
