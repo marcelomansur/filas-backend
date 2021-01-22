@@ -203,9 +203,13 @@ func (repo *StoreRepositoryImpl) RemoveConsumer(id string, phone string) error {
 
 	for i, consumer := range store.Queue {
 		if consumer.Phone == phone {
+			// Remove from queue
 			copy(store.Queue[i:], store.Queue[i+1:])
 			store.Queue[len(store.Queue)-1] = nil
 			store.Queue = store.Queue[:len(store.Queue)-1]
+			// Set status to removed
+			consumer.Status = "Cancelado"
+			store.Queue = append(store.Queue, consumer)
 
 			oid, err := primitive.ObjectIDFromHex(id)
 			if err != nil {
@@ -256,7 +260,11 @@ func (repo *StoreRepositoryImpl) GetAllConsumers(id string) ([]*domain.Consumer,
 		return nil, errors.New(ErrorNotFoundStore)
 	}
 
-	return store.Queue, nil
+	validQueue := Filter(store.Queue, func(val string) bool {
+		return val == "Na fila"
+	})
+
+	return validQueue, nil
 }
 
 // ValidateConsumer implements
@@ -274,4 +282,15 @@ func (repo *StoreRepositoryImpl) ValidateConsumer(storeName, accessKey string) (
 	}
 
 	return -1, nil, errors.New(ErrorNotValidAccessKey)
+}
+
+// Filter implements
+func Filter(arr []*domain.Consumer, cond func(string) bool) []*domain.Consumer {
+	result := []*domain.Consumer{}
+	for _, item := range arr {
+		if cond(item.Status) {
+			result = append(result, item)
+		}
+	}
+	return result
 }
